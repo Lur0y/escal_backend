@@ -35,27 +35,6 @@ BEGIN TRY
 SET NOCOUNT ON;
 PRINT '...TABLES CREATION STARTS...'
 
-    CREATE TABLE versions(
-
-        RECORD_created_at                           DATETIME2                       DEFAULT GETDATE(),
-        RECORD_updated_at                           DATETIME2                       DEFAULT NULL,
-        version_number                              VARCHAR(20)                     PRIMARY KEY NOT NULL,
-        version_title                               VARCHAR(50)                     NOT NULL,
-        release_date                                DATETIME2                       NOT NULL
- 
-    );
-
-    CREATE TABLE changelogs(
-
-        RECORD_id                                   BIGINT                          NOT NULL PRIMARY KEY IDENTITY,         
-        RECORD_created_at                           DATETIME2                       DEFAULT GETDATE(),
-        RECORD_updated_at                           DATETIME2                       DEFAULT NULL,
-        version_number                              VARCHAR(20)                     NOT NULL FOREIGN KEY REFERENCES versions(version_number),
-        changelog_title                             VARCHAR(255)                    NOT NULL,              
-        changelog_description                       TEXT                            NOT NULL
-
-    );
-
     CREATE TABLE personal_access_tokens(
 
         id                                          BIGINT                          PRIMARY KEY IDENTITY NOT NULL,
@@ -70,6 +49,37 @@ PRINT '...TABLES CREATION STARTS...'
         updated_at                                  DATETIME2                       NULL
         
     );
+
+    CREATE TABLE versions(
+
+        --Default Columns
+        RECORD_created_at                           DATETIME2                       DEFAULT GETDATE(),
+        RECORD_updated_at                           DATETIME2                       DEFAULT NULL,
+        
+        --Data Columns
+        version_number                              VARCHAR(20)                     PRIMARY KEY NOT NULL,
+        version_title                               VARCHAR(50)                     NOT NULL,
+        release_date                                DATETIME2                       NOT NULL
+ 
+    );
+
+    CREATE TABLE changelogs(
+
+        --Default Columns
+        RECORD_id                                   BIGINT                          NOT NULL PRIMARY KEY IDENTITY,         
+        RECORD_created_at                           DATETIME2                       DEFAULT GETDATE(),
+        RECORD_updated_at                           DATETIME2                       DEFAULT NULL,
+        
+        --Foreign Key Columns
+        FK_version_number                           VARCHAR(20)                     NOT NULL FOREIGN KEY REFERENCES versions(version_number),
+        
+        --Data Columns
+        changelog_title                             VARCHAR(255)                    NOT NULL,              
+        changelog_description                       TEXT                            NOT NULL
+
+    );
+
+    
 
     CREATE TABLE admins(
 
@@ -112,6 +122,19 @@ PRINT '...TABLES CREATION STARTS...'
 
     );
 
+    CREATE TABLE survey_status(
+
+        --Default Columns
+        RECORD_id                                   TINYINT                         NOT NULL PRIMARY KEY IDENTITY,
+        RECORD_created_at                           DATETIME2                       DEFAULT GETDATE(),
+        RECORD_updated_at                           DATETIME2                       DEFAULT NULL,
+        RECORD_deleted_at                           DATETIME2                       DEFAULT NULL,
+
+        --Data Columns
+        survey_status_description                   VARCHAR(50)                     NOT NULL
+
+    );
+
     CREATE TABLE surveys(
 
         --Default Columns
@@ -123,11 +146,11 @@ PRINT '...TABLES CREATION STARTS...'
         --Foreign Key Columns
         FK_course_id                                BIGINT                          NOT NULL FOREIGN KEY REFERENCES courses(RECORD_id),
         FK_teacher_id                               BIGINT                          NOT NULL FOREIGN KEY REFERENCES teachers(RECORD_id),
+        FK_survey_status_id                         TINYINT                         NOT NULL FOREIGN KEY REFERENCES survey_status(RECORD_id),
 
         --Data Columns
         course_starts_at                            DATETIME2                       NOT NULL,
         course_ends_at                              DATETIME2                       NOT NULL,
-        is_survey_active                            BIT                             NOT NULL DEFAULT 1,
         teacher_code                                VARCHAR(4)                      NOT NULL
 
     );
@@ -201,6 +224,12 @@ PRINT '';
 BEGIN TRY
 SET NOCOUNT ON;
 PRINT '...DEFAULT DATA INSERTION STARTS...'
+
+    INSERT INTO survey_status(survey_status_description) VALUES
+        ('En espera'),
+        ('Abierta'),
+        ('Cerrada');
+
 
     INSERT INTO survey_questions(question_type, question_text) VALUES
         (1, 'La información que dio al grupo sobre los objetivos:'),
