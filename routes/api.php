@@ -6,6 +6,8 @@ use App\Http\Controllers\TokenController;
 use App\Http\Middleware\AdminIsLoadedMiddleware;
 use App\Http\Middleware\AdminIsNotLoadedMiddleware;
 use App\Http\Middleware\AuthDataMiddleware;
+use App\Http\Middleware\CourseDataMiddleware;
+use App\Http\Middleware\CourseExistsMiddleware;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -26,12 +28,30 @@ Route::prefix('tokens')->controller(TokenController::class)->group(function () {
 
 Route::prefix('courses')->controller(CourseController::class)->group(function () {
 
-    Route::get('/', 'show')->middleware([AdminIsLoadedMiddleware::class, 'auth:sanctum']);
+    Route::get('/', 'show')->middleware([
+        AdminIsLoadedMiddleware::class,
+        'auth:sanctum'
+    ]);
+    Route::post('/', 'store')->middleware([
+        AdminIsLoadedMiddleware::class,
+        'auth:sanctum',
+        CourseDataMiddleware::class
+    ]);
+    Route::put('/{course_id}', 'update')->middleware([
+        AdminIsLoadedMiddleware::class,
+        'auth:sanctum',
+        CourseExistsMiddleware::class,
+        CourseDataMiddleware::class
+    ]);
+    Route::delete('/{course_id}', 'destroy')->middleware([
+        AdminIsLoadedMiddleware::class,
+        'auth:sanctum',
+        CourseExistsMiddleware::class
+    ]);
 });
 
 /* TODO:
 
-    CRUD -> courses
     CRUD -> teachers
     POST -> surveys
     POST -> surveys/{survey_id}/answers/code/1234
