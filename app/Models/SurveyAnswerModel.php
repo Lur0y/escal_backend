@@ -21,6 +21,7 @@ class SurveyAnswerModel extends Model
 
     public function surveyQuestions(): BelongsToMany
     {
-        return $this->belongsToMany(SurveyQuestionModel::class, 'survey_question_survey_answer', 'FK_survey_answer_id', 'FK_survey_question_id');
+        return $this->belongsToMany(SurveyQuestionModel::class, 'survey_question_survey_answer', 'FK_survey_answer_id', 'FK_survey_question_id')
+            ->withPivot('answer_value');
     }
 }

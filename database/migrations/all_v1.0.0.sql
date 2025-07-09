@@ -230,7 +230,6 @@ PRINT '...DEFAULT DATA INSERTION STARTS...'
         ('Abierta'),
         ('Cerrada');
 
-
     INSERT INTO survey_questions(question_type, question_text) VALUES
         (1, 'La información que dio al grupo sobre los objetivos:'),
         (1, 'El conocimiento que demostró de los temas fue:'),

@@ -2,13 +2,18 @@
 
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\CourseController;
+use App\Http\Controllers\SurveyController;
 use App\Http\Controllers\TeacherController;
 use App\Http\Controllers\TokenController;
 use App\Http\Middleware\AdminIsLoadedMiddleware;
 use App\Http\Middleware\AdminIsNotLoadedMiddleware;
+use App\Http\Middleware\AnswerDataMiddleware;
 use App\Http\Middleware\AuthDataMiddleware;
 use App\Http\Middleware\CourseDataMiddleware;
 use App\Http\Middleware\CourseExistsMiddleware;
+use App\Http\Middleware\SurveyDataMiddleware;
+use App\Http\Middleware\SurveyExistsMiddleware;
+use App\Http\Middleware\SurveyStateChangeMiddleware;
 use App\Http\Middleware\TeacherDataMiddleware;
 use App\Http\Middleware\TeacherExistsMiddleware;
 use App\Http\Middleware\TeacherHasPhotoMiddleware;
@@ -91,12 +96,23 @@ Route::prefix('teachers')->controller(TeacherController::class)->group(function 
     ]);
 });
 
-/* TODO:
+Route::prefix('surveys')->controller(SurveyController::class)->group(function () {
 
-    POST -> surveys
-    POST -> surveys/{survey_id}/answers/code/1234
-    // A way to:
-        -Open survey with teachers code
-        -Close survey again with teachers code
-        -Important: Never reopen surveys!
-*/
+    Route::post('/', 'store')->middleware([
+        AdminIsLoadedMiddleware::class,
+        'auth:sanctum',
+        SurveyDataMiddleware::class
+    ]);
+
+    Route::patch('/{survey_id}/state', 'updateState')->middleware([
+        AdminIsLoadedMiddleware::class,
+        SurveyExistsMiddleware::class,
+        SurveyStateChangeMiddleware::class
+    ]);
+
+    Route::post('/{survey_id}/answers', 'storeAnswer')->middleware([
+        AdminIsLoadedMiddleware::class,
+        SurveyExistsMiddleware::class,
+        AnswerDataMiddleware::class
+    ]);
+});
