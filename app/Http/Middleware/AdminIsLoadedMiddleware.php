@@ -16,7 +16,7 @@ class AdminIsLoadedMiddleware
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if ($request->is('admins')) {
+        if ($request->is('api/admins/default')) {
             return $next($request);
         }
 
