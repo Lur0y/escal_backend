@@ -34,6 +34,16 @@ Route::prefix('tokens')->controller(TokenController::class)->group(function () {
         AdminIsLoadedMiddleware::class,
         AuthDataMiddleware::class
     ]);
+
+    Route::get('/validate', 'validateToken')->middleware([
+        AdminIsLoadedMiddleware::class,
+        'auth:sanctum'
+    ]);
+
+    Route::delete('/', 'deleteAllUserTokens')->middleware([
+        AdminIsLoadedMiddleware::class,
+        'auth:sanctum'
+    ]);
 });
 
 Route::prefix('courses')->controller(CourseController::class)->group(function () {

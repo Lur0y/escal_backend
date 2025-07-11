@@ -21,4 +21,9 @@ class TokenService
     {
         return $admin->createToken($admin->username, [])->plainTextToken;
     }
+
+    public function deleteAllUserTokens(AdminModel $admin): void
+    {
+        $admin->tokens()->delete();
+    }
 }
