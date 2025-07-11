@@ -16,6 +16,10 @@ class AdminIsLoadedMiddleware
      */
     public function handle(Request $request, Closure $next): Response
     {
+        if ($request->is('admins')) {
+            return $next($request);
+        }
+
         $default_admin_service = new DefaultAdminService;
         if (!$default_admin_service->isDefaultAdminLoaded()) {
             return response()->json(['message' => 'Default admin has not been loaded, cannot use the system without it'], 425);
