@@ -107,4 +107,8 @@ Route::prefix('surveys')->controller(SurveyController::class)->group(function ()
         SurveyExistsMiddleware::class,
         AnswerDataMiddleware::class
     ]);
+
+    Route::get('/{survey_id}/questions', 'showQuestions')->middleware([
+        SurveyExistsMiddleware::class
+    ]);
 });

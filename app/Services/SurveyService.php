@@ -8,6 +8,12 @@ use Illuminate\Support\Facades\DB;
 
 class SurveyService
 {
+    public function getSurveyQuestions(SurveyModel $survey)
+    {
+        $ans = $survey->surveyAnswers;
+        $questions = (count($ans) > 0) ? $survey->surveyAnswers[0]->surveyQuestions : [];
+        return $questions;
+    }
     public function surveyIsOpenable(SurveyModel $survey): bool
     {
         return $survey->FK_survey_status_id == 1;

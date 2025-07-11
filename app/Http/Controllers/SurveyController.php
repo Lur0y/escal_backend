@@ -50,4 +50,10 @@ class SurveyController extends Controller
             'message' => 'The code does not match any student code for this survey or the survey has already been answered'
         ], 401);
     }
+
+    public function showQuestions($survey_id, SurveyService $survey_service)
+    {
+        $questions = $survey_service->getSurveyQuestions(SurveyModel::find($survey_id));
+        return response()->json($questions, 200);
+    }
 }
