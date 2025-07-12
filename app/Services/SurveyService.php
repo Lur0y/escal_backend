@@ -4,14 +4,14 @@ namespace App\Services;
 
 use App\Models\SurveyAnswerModel;
 use App\Models\SurveyModel;
+use App\Models\SurveyQuestionModel;
 use Illuminate\Support\Facades\DB;
 
 class SurveyService
 {
     public function getSurveyQuestions(SurveyModel $survey)
     {
-        $ans = $survey->surveyAnswers;
-        $questions = (count($ans) > 0) ? $survey->surveyAnswers[0]->surveyQuestions : [];
+        $questions = SurveyQuestionModel::all();
         return $questions;
     }
     public function surveyIsOpenable(SurveyModel $survey): bool
