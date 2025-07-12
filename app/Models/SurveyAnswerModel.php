@@ -5,14 +5,18 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class SurveyAnswerModel extends Model
 {
+    use SoftDeletes;
+
     protected $table = "survey_answers";
     protected $primaryKey = "RECORD_id";
 
     const CREATED_AT = 'RECORD_created_at';
     const UPDATED_AT = 'RECORD_updated_at';
+    const DELETED_AT = 'RECORD_deleted_at';
 
     public function survey(): BelongsTo
     {
